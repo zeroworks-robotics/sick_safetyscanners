@@ -58,7 +58,8 @@ SickSafetyscannersRos::SickSafetyscannersRos()
   }
   // tcp port can not be changed in the sensor configuration, therefore it is hardcoded
   m_communication_settings.setSensorTcpPort(2122);
-  m_laser_scan_publisher = m_nh.advertise<sensor_msgs::LaserScan>("scan", 100);
+  m_private_nh.param("scan_topic", m_topic, std::string("scan"));
+  m_laser_scan_publisher = m_nh.advertise<sensor_msgs::LaserScan>(m_topic, 100);
   m_extended_laser_scan_publisher =
     m_nh.advertise<sick_safetyscanners::ExtendedLaserScanMsg>("extended_laser_scan", 100);
   m_raw_data_publisher = m_nh.advertise<sick_safetyscanners::RawMicroScanDataMsg>("raw_data", 100);
@@ -109,8 +110,8 @@ void SickSafetyscannersRos::readTypeCodeSettings()
   sick::datastructure::TypeCode type_code;
   m_device->requestTypeCode(m_communication_settings, type_code);
   m_communication_settings.setEInterfaceType(type_code.getInterfaceType());
-  m_range_min = 0.1;
-  m_range_max = type_code.getMaxRange();
+  m_private_nh.param("min_range", m_range_min, 0.1);
+  m_private_nh.param("max_range", m_range_max, static_cast<double>(type_code.getMaxRange()));
 }
 
 void SickSafetyscannersRos::readPersistentConfig()

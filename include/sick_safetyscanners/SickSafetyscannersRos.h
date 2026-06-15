@@ -157,6 +157,7 @@ private:
   dynamic_reconfigure::Server<sick_safetyscanners::SickSafetyscannersConfigurationConfig>
     m_dynamic_reconfiguration_server;
 
+  std::string m_topic;
   std::string m_frame_id;
   double m_time_offset;
   double m_range_min;
